@@ -14,7 +14,7 @@ let small = document.getElementById("small");
 let tbody = document.getElementById("tbody");
 let deleteAllBtn = document.getElementById("delete-all");
 
-let searchFlag = "category";
+let searchFlag = "title";
 
 let data;
 if (localStorage.data != null) {
@@ -27,11 +27,13 @@ if (localStorage.data != null) {
 searchByTitleBtn.addEventListener("click", () => {
   changeSearchPlaceholder("Search By Title");
   searchFlag = "title";
+  searchBar.focus()
 });
 
 searchByCategoryBtn.addEventListener("click", () => {
   changeSearchPlaceholder("Search By Category");
   searchFlag = "category";
+  searchBar.focus()
 });
 
 searchBar.addEventListener("keyup", () => {
@@ -156,7 +158,7 @@ function changeSearchPlaceholder(value) {
 }
 
 function SearchFun(type, searchValue) {
-  filteredData = data.filter((product) => product[type] == searchValue);
+  filteredData = data.filter((product) => `${product[type].toLowerCase()}`.includes(searchValue));
   showData(filteredData);
 }
 

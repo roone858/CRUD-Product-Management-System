@@ -31,6 +31,7 @@ input{
     outline: 0;
     background-color:#252525;
     color: #ffffff;
+    transition: 0.1s;
     
    
  }
@@ -89,4 +90,9 @@ small{
 }
 small::before{
     content: "Total =  ";
+}
+#submit{
+    background-color: red;
+    display: none;
+   
 }

@@ -6,6 +6,7 @@ let discount = document.getElementById("discount");
 let count = document.getElementById("count");
 let category = document.getElementById("category");
 let createBtn = document.getElementById("create");
+let submitBtn = document.getElementById("submit");
 let searchBar = document.getElementById("search");
 let searchByTitleBtn = document.getElementById("searchTitle");
 let searchByCategoryBtn = document.getElementById("searchCategory");
@@ -35,10 +36,10 @@ searchByCategoryBtn.addEventListener("click", () => {
 
 searchBar.addEventListener("keyup", () => {
   if (searchFlag == "title") {
-    SearchFun("title",searchBar.value);
+    SearchFun("title", searchBar.value);
   }
   if (searchFlag == "category") {
-    SearchFun("category",searchBar.value);
+    SearchFun("category", searchBar.value);
   }
 });
 
@@ -62,8 +63,6 @@ deleteAllBtn.addEventListener("click", () => {
   deleteAll();
 });
 
-
-
 function deleteProduct(id) {
   data.splice(id, 1);
   data.forEach((product, index) => (product.id = index));
@@ -72,16 +71,16 @@ function deleteProduct(id) {
 }
 
 function createProduct() {
-  console.log(data);
   var newProduct = {
     id: data.length,
-    title: title.value,
+    title: `${title.value}`[0].toUpperCase()+`${title.value}`.slice(1),
     price: price.value,
     taxes: taxes.value,
     ads: ads.value,
     discount: discount.value,
     total: geTotalPrice(),
     category: category.value,
+    count: count.value,
   };
   data.push(newProduct);
   localStorage.setItem("data", JSON.stringify(data));
@@ -97,13 +96,43 @@ function insertProduct(product, id) {
       <td>${product.taxes}</td>
       <td>${product.ads}</td>
       <td>${product.discount}</td>
-      <td>${product.price}</td>
+      <td>${geTotalPrice()}</td>
       <td>${product.category}</td>
-      <td><button>update</button></td>
+      <td>${product.count}</td>
+      <td><button onclick="updateProduct(${id})">update</button></td>
       <td><button onclick="deleteProduct(${id})" >delete</button></td>
       `;
   tbody.innerHTML += tableRaw;
 }
+
+function updateProduct(id) {
+  product = data.filter((product) => product.id == id)[0];
+  title.value = product.title;
+  price.value = product.price;
+  taxes.value = product.taxes;
+  ads.value = product.ads;
+  category.value = product.category;
+  discount.value = product.discount;
+  count.value = product.count;
+  createBtn.style.display = "none";
+  submitBtn.style.display = "block";
+  submitBtn.setAttribute("onclick", `submitChange(${id});`);
+}
+function submitChange(id) {
+  data[id].title = title.value;
+  data[id].price = price.value;
+  data[id].taxes = taxes.value;
+  data[id].ads = ads.value;
+  data[id].category = category.value;
+  data[id].discount = discount.value;
+  data[id].count = count.value;
+  showData(data);
+  localStorage.setItem("data", JSON.stringify(data));
+  clearValues();
+  submitBtn.style.display = "none";
+  createBtn.style.display = "block";
+}
+
 function geTotalPrice() {
   var total =
     Number(price.value) +
@@ -126,14 +155,10 @@ function changeSearchPlaceholder(value) {
   searchBar.placeholder = value;
 }
 
-function SearchFun(type,searchValue) {
-  filteredData = data.filter((product) =>
-  product[type]==searchValue
-  );
-  showData(filteredData)
+function SearchFun(type, searchValue) {
+  filteredData = data.filter((product) => product[type] == searchValue);
+  showData(filteredData);
 }
-
-
 
 function clearValues() {
   title.value = "";
@@ -141,8 +166,9 @@ function clearValues() {
   taxes.value = "";
   ads.value = "";
   discount.value = "";
-  count.value = 0;
+  count.value = "";
   category.value = "";
+ 
 }
 
 function deleteAll() {
